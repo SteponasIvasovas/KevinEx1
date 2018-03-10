@@ -1,4 +1,4 @@
-const {get} = require('request-promise');
+const {get} = require('request-promise-native');
 
 //paskutinis parametras nurodo kiek kartu padaryti uzklausa, nenurodzius daro begalybe kartu arba kol
 //pagauna klaida
@@ -15,7 +15,7 @@ function getEvery(uri, ms, times = Infinity) {
     retry = 0;
     counter++;
     if (counter < times) {
-      setTimeout(() => { get(options).then(resolve).catch(reject) }, ms);
+      setTimeout(() => { get(options).then(resolve, reject) }, ms);
     }
   };
 
@@ -24,13 +24,13 @@ function getEvery(uri, ms, times = Infinity) {
 
     if (retry < 5) {
       console.log(`Retrying request, attempt : ${++retry}`);
-      get(options).then(resolve).catch(reject);
+      get(options).then(resolve, reject);
     } else {
       console.log(`Failed to receive a response after ${retry} tries... Aborting connection`);
     }
   };
 
-  return () => { get(options).then(resolve).catch(reject) };
+  return () => {get(options).then(resolve, reject); };
 }
 
 //siuncia requesta kas 10 sekundziu 5 kartus.
