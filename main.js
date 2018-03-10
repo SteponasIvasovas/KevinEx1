@@ -3,8 +3,7 @@ const {get} = require('request-promise');
 //paskutinis parametras nurodo kiek kartu padaryti uzklausa, nenurodzius daro begalybe kartu arba kol
 //pagauna klaida
 function getEvery(uri, ms, times = Infinity) {
-  let counter = 0;
-  let retry = 0;
+  let counter = 0, retry = 0;
   let options = {
     method: 'GET',
     uri,
@@ -13,6 +12,7 @@ function getEvery(uri, ms, times = Infinity) {
 
   const resolve = response => {
     console.log(`Bitcoin price $${JSON.parse(response.body)["last_price"]}`);
+    retry = 0;
     counter++;
     if (counter < times) {
       setTimeout(() => { get(options).then(resolve).catch(reject) }, ms);
